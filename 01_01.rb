@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
-unless ARGV.empty?
+require 'benchmark'
+
+if ARGF
   sum = 0
-  input = ARGV[0].to_s.split('').map(&:to_i)
-  input.each_index do |idx|
-    num = input[idx].to_i
-    if idx == (input.length - 1)
-      sum += num if num == input[0]
-    elsif num == input[idx + 1]
-      sum += num
+  time = Benchmark.realtime do
+    input = ARGF.read.to_s.split('').map(&:to_i)
+    input.each_index do |idx|
+      num = input[idx].to_i
+      if idx == (input.length - 1)
+        sum += num if num == input[0]
+      elsif num == input[idx + 1]
+        sum += num
+      end
     end
   end
-  puts "sum = #{sum}"
+  printf "sum = %d (took %.3fs)\n", sum, time
 end
