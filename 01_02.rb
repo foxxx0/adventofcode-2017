@@ -2,7 +2,7 @@
 
 if ARGF
   sum = 0
-  input = ARGF.read.to_s.split('').map(&:to_i)
+  input = ARGF.read.to_s.chomp("\n").split('').map(&:to_i)
   unless input.length.odd?
     half = input.length / 2
     input.each_index do |idx|
