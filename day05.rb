@@ -25,11 +25,8 @@ def part2(input = nil)
   loop do
     break if i >= instructions.length
     jump = instructions[i]
-    if jump >= 3
-      instructions[i] -= 1
-    else
-      instructions[i] += 1
-    end
+    jump >= 3 ? instructions[i] -= 1 : instructions[i] += 1
+    # printf("jump (%d) >= 3 : %s\n", jump, jump >= 3 ? instructions[i] -= 1 : instructions[i] += 1)
     steps += 1
     i += jump
   end
