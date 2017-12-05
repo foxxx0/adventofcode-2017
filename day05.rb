@@ -51,5 +51,5 @@ if ARGF
 
   fmt_output = "%6s: %10s = %8d (took %.3fs)\n"
   printf fmt_output, 'part1', 'steps', result_part1, time_part1
-  printf fmt_output, 'part2', 'valid', result_part2, time_part2
+  printf fmt_output, 'part2', 'steps', result_part2, time_part2
 end
