@@ -16,15 +16,6 @@ def max_index(input : Enumerable(Int32)) : Int32?
   index
 end
 
-def tspan_ms(input : Time::Span) : Float64
-  ms = 0.0
-  hours, minutes, seconds = input.to_s.split(":").map(&.to_f64)
-  ms += hours * 3600000
-  ms += minutes * 60000
-  ms += seconds * 1000
-  ms
-end
-
 def part1(
   banks : Array(Int32),
   seen : Hash(Array(Int32), Int32)
@@ -68,14 +59,14 @@ if ARGF
   result1 = 0
   result2 = 0
 
-  duration1 = Benchmark.realtime do
+  time1 = Benchmark.realtime do
     result1, duplicate = part1(input, seen)
   end
-  printf fmt_output, "part1", "redist cycles", result1, tspan_ms(duration1)
+  printf fmt_output, "part1", "redist cycles", result1, time1.total_milliseconds
 
 
-  duration2 = Benchmark.realtime do
+  time2 = Benchmark.realtime do
     result2 = part2(duplicate, seen)
   end
-  printf fmt_output, "part2", "loop size", result2, tspan_ms(duration2)
+  printf fmt_output, "part2", "loop size", result2, time2.total_milliseconds
 end
