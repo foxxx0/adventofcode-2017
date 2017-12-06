@@ -1,48 +1,63 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+# rubocop:disable Metrics/MethodLength
 
 require 'benchmark'
 
-def part1(input = nil)
-  banks = input.map(&:to_i)
-  seen = {}
-  cycles = 0
-  until seen.include?(banks.join)
-    seen[banks.join] = cycles
-    blocks = banks.max
-    i = banks.find_index(blocks)
-    banks[i] = 0
-    i == (banks.length - 1) ? i = 0 : i += 1
-    while blocks > 0
-      banks[i] += 1
-      blocks -= 1
-      i == (banks.length - 1) ? i = 0 : i += 1
+def max_index(input = nil)
+  max = 0
+  index = nil
+
+  input.each_with_index do |el, idx|
+    if el > max
+      max = el
+      index = idx
     end
+  end
+
+  index
+end
+
+def part1(banks = nil, seen = nil)
+  cycles = 0
+  until seen.key?(banks)
+    seen[banks.dup] = cycles
+
+    idx_bank = max_index(banks)
+    blocks = banks[idx_bank]
+    banks[idx_bank] = 0
+
+    i = 0
+    blocks.downto(1) do
+      idx_bank = ((idx_bank + 1) % banks.size)
+      banks[idx_bank] += 1
+      i += 1
+    end
+
     cycles += 1
   end
-  [cycles, banks.join, seen]
+  [cycles, banks, seen]
 end
 
 def part2(duplicate = nil, seen = nil)
-  seen.length - seen[duplicate]
+  seen.size - seen[duplicate]
 end
 
 if ARGF
-  input = ARGF.read.split("\t")
-  result_part1 = 0
-  duplicate = ''
+  input = ARGF.read.split("\t").map(&:to_i)
+  fmt_output = "%6s: %14s = %8d (took %8.3fms)\n"
+  duplicate = []
   seen = {}
-  result_part2 = 0
-  fmt_output = "%6s: %14s = %8d (took %.3fs)\n"
+  result1 = 0
+  result2 = 0
 
-  time_part1 = Benchmark.realtime do
-    result_part1, duplicate, seen = part1(input)
+  duration1 = Benchmark.realtime do
+    result1, duplicate = part1(input, seen)
   end
-  printf fmt_output, 'part1', 'redist cycles', result_part1, time_part1
+  printf fmt_output, 'part1', 'redist cycles', result1, duration1 * 1000
 
-  time_part2 = Benchmark.realtime do
-    result_part2 = part2(duplicate, seen)
+  duration2 = Benchmark.realtime do
+    result2 = part2(duplicate, seen)
   end
-  printf fmt_output, 'part2', 'loop size', result_part2, time_part2
+  printf fmt_output, 'part2', 'loop size', result2, duration2 * 1000
 end
