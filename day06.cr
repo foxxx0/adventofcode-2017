@@ -39,7 +39,6 @@ def part1(
     # select highest value for redistribution
     idx_bank = max_index(banks).not_nil!
     blocks = banks[idx_bank]
-    raise "ERROR: unable to find index of #{blocks}" if idx_bank.nil?
     banks[idx_bank] = 0
 
     # redistribute blocks until none left
