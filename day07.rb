@@ -7,24 +7,21 @@ require 'json'
 require 'pp'
 
 def part1(input = nil)
-  tree = {}
+  childs = {}
+  parents = []
 
-  input.each do |line|
+  input.grep(/->/).each do |line|
     parts = line.split(' ')
     parts.delete(2) # '->'
 
-    0.upto(parts.size - 1) do |idx|
+    parents << parts[0]
+    3.upto(parts.size - 1) do |idx|
       next if idx == 1 # weight
-      element = parts[idx]
-      if tree.key?(element)
-        tree[element] += 1
-      else
-        tree[element] = 1
-      end
+      childs[parts[idx]] = 1
     end
   end
 
-  tree.key(1)
+  parents.reject { |p| childs.key?(p) }.first
 end
 
 def build_tree(nodes, root)
