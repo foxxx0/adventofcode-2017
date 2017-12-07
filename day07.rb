@@ -42,37 +42,37 @@ class TreeUnbalancedError < StandardError
 end
 
 def get_weights(id, obj)
-  return obj unless obj.respond_to?(:key?)
+  return obj unless obj.respond_to?(:key?) && obj.key?(:children)
 
   weights = {}
   obj[:children].each do |cid, child|
+    test = get_weights(cid, child)
     weights[cid] = if child.respond_to?(:key?)
-                     get_weights(cid, child)[cid]
+                     { test[cid] => test[:original] }
                    else
                      child
                    end
   end
 
   w_vals = weights.values
+  w_vals.each_index do |idx|
+    w_vals[idx] = w_vals[idx].keys.first if w_vals[idx].respond_to?(:key?)
+  end
 
-  wrong = w_vals.detect { |w| w_vals.count(w) == 1 }
-  correct = w_vals.detect { |w| w_vals.count(w) > 1 }
   unless w_vals.count(w_vals.first) == w_vals.size
+    wrong = w_vals.detect { |w| w_vals.count(w) == 1 }
+    correct = w_vals.detect { |w| w_vals.count(w) > 1 }
+
+    node = weights.select { |n| weights[n].key?(wrong) }
+    id = node.keys.first
+
     raise TreeUnbalancedError,
-          'node' => weights.key(wrong), 'delta' => wrong - correct
+          'node' => id, 'weight' => node[id][wrong], 'delta' => wrong - correct
   end
 
-  { id => obj[:weight] += w_vals.reduce(:+) }
-end
-
-def find_node(obj, key)
-  if obj.respond_to?(:key?) && obj.key?(key)
-    obj[key]
-  elsif obj.respond_to?(:each)
-    r = nil
-    obj.find { |*n| r = find_node(n.last, key) }
-    r
-  end
+  w_self = obj[:weight]
+  obj[:weight] += w_vals.reduce(:+)
+  { id => obj[:weight], original: w_self }
 end
 
 def part2(input = nil, root = nil)
@@ -91,18 +91,15 @@ def part2(input = nil, root = nil)
   end
 
   tree = { root => build_tree(nodes, root) }
-  temp = Marshal.load(Marshal.dump(tree))
-  # pp(tree)
 
   begin
-    get_weights(root, temp[root])
+    get_weights(root, tree[root])
   rescue TreeUnbalancedError => err
     result = JSON.parse(err.message.gsub('=>', ':'))
     # pp(result)
-    id = result['node']
+    weight = result['weight']
     delta = result['delta']
-    node = find_node(tree, id)
-    return node[:weight] - delta
+    return weight - delta
   end
 end
 
