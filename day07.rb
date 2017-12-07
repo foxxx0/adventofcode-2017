@@ -107,7 +107,7 @@ end
 
 if ARGF
   input = ARGF.read.tr('(),', '').split("\n")
-  fmt_output = "%6s: %14s = %8s (took %8.3fms)\n"
+  fmt_output = "%6s: %14s = %15s (took %8.3fms)\n"
   result1 = nil
   result2 = 0
 
@@ -119,5 +119,5 @@ if ARGF
   duration2 = Benchmark.realtime do
     result2 = part2(input, result1)
   end
-  printf fmt_output, 'part2', 'result', result2.to_s, duration2 * 1000
+  printf fmt_output, 'part2', 'new weight', result2.to_s, duration2 * 1000
 end
