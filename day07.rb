@@ -98,6 +98,7 @@ def part2(input = nil, root = nil)
     get_weights(root, temp[root])
   rescue TreeUnbalancedError => err
     result = JSON.parse(err.message.gsub('=>', ':'))
+    # pp(result)
     id = result['node']
     delta = result['delta']
     node = find_node(tree, id)
