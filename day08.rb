@@ -3,11 +3,12 @@
 # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
 
 require 'benchmark'
-require 'pp'
+# require 'pp'
 
 def part12(input = nil)
   highest = 0
   registers = {}
+
   input.each do |line|
     reg, instr, param, _if, chk_reg, cond_op, condition = line.split(' ')
     param = param.to_i
@@ -21,11 +22,12 @@ def part12(input = nil)
     registers[reg] += param
     highest = registers[reg] if registers[reg] > highest
   end
+
   [registers.values.max, highest]
 end
 
 if ARGF
-  input = ARGF.read.split("\n")
+  input = ARGF.read.lines
   fmt_output = "%6s: %14s = %7d (took %8.3fms)\n"
   result1 = nil
   result2 = nil
