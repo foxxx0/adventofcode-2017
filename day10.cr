@@ -71,7 +71,7 @@ def part2(input : String) : String
     end
     dense_hash << hash
   end
-  dense_hash.map { |x| x.to_s(16) }.join
+  dense_hash.map { |x| x.to_s(16).rjust(2, '0') }.join
 end
 
 if ARGF

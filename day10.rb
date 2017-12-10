@@ -41,7 +41,7 @@ def part2(input = nil)
   idx = 0
   skip = 0
 
-  ascii = input.chomp("\n").split('').map(&:ord)
+  ascii = input.chomp("\n").chars.map(&:ord)
 
   # add suffix
   ascii << 17 << 31 << 73 << 47 << 23
@@ -75,7 +75,7 @@ def part2(input = nil)
     end
     dense_hash << hash
   end
-  dense_hash.map { |x| x.to_s(16) }.join
+  dense_hash.map { |x| x.to_s(16).rjust(2, '0') }.join
 end
 
 if ARGF
