@@ -6,9 +6,12 @@ require 'benchmark'
 require 'pp'
 
 RING_LENGTH = 256
+RING_MAX_INDEX = RING_LENGTH - 1
+SPARSE_PARTS = 16
+DENSE_PART_SIZE = (RING_LENGTH / 16).floor
 
 def part1(input = nil)
-  ring = (0..(RING_LENGTH - 1)).to_a
+  ring = (0..RING_MAX_INDEX).to_a
   idx = 0
   skip = 0
 
@@ -18,12 +21,12 @@ def part1(input = nil)
     unless length == 1
       sublist = []
       0.upto(length - 1) do |i|
-        sublist << ring[(idx + i) % ring.size].dup
+        sublist << ring[(idx + i) % ring.size]
       end
       sublist.reverse!
 
       0.upto(sublist.size - 1) do |i|
-        ring[(idx + i) % ring.size] = sublist[i].dup
+        ring[(idx + i) % ring.size] = sublist[i]
       end
     end
     idx = (idx + length + skip) % ring.size
@@ -34,11 +37,13 @@ def part1(input = nil)
 end
 
 def part2(input = nil)
-  ring = (0..(RING_LENGTH - 1)).to_a
+  ring = (0..RING_MAX_INDEX).to_a
   idx = 0
   skip = 0
 
   ascii = input.chomp("\n").split('').map(&:ord)
+
+  # add suffix
   ascii << 17 << 31 << 73 << 47 << 23
 
   64.times do
@@ -48,12 +53,12 @@ def part2(input = nil)
       unless length == 1
         sublist = []
         0.upto(length - 1) do |i|
-          sublist << ring[(idx + i) % ring.size].dup
+          sublist << ring[(idx + i) % ring.size]
         end
         sublist.reverse!
 
         0.upto(sublist.size - 1) do |i|
-          ring[(idx + i) % ring.size] = sublist[i].dup
+          ring[(idx + i) % ring.size] = sublist[i]
         end
       end
       idx = (idx + length + skip) % ring.size
@@ -62,8 +67,8 @@ def part2(input = nil)
   end
 
   dense_hash = []
-  (0..(RING_LENGTH - 1)).step(16).each do |start|
-    slice = ring[start, 16]
+  (0..RING_MAX_INDEX).step(SPARSE_PARTS).each do |start|
+    slice = ring[start, DENSE_PART_SIZE]
     hash = slice[0]
     1.upto(slice.length - 1) do |i|
       hash = hash ^ slice[i]
