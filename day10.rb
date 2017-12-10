@@ -70,7 +70,7 @@ def part2(input = nil)
   (0..RING_MAX_INDEX).step(SPARSE_PARTS).each do |start|
     slice = ring[start, DENSE_PART_SIZE]
     hash = slice[0]
-    1.upto(slice.length - 1) do |i|
+    1.upto(slice.size - 1) do |i|
       hash = hash ^ slice[i]
     end
     dense_hash << hash
