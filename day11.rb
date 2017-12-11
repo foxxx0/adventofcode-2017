@@ -31,9 +31,9 @@ def part1(input = nil)
       point[:x] -= 1
       point[:y] += 1
     end
-    coords = [point[:x], point[:y], point[:z]].join(',')
-    sum = point.values.reduce(:+)
-    raise "ERROR: point is off-grid: #{coords}" unless sum.zero?
+    # coords = [point[:x], point[:y], point[:z]].join(',')
+    # sum = point.values.reduce(:+)
+    # raise "ERROR: point is off-grid: #{coords}" unless sum.zero?
   end
 
   point.values.map(&:abs).max
@@ -65,9 +65,9 @@ def part2(input = nil)
       point[:x] -= 1
       point[:y] += 1
     end
-    coords = [point[:x], point[:y], point[:z]].join(',')
-    sum = point.values.reduce(:+)
-    raise "ERROR: point is off-grid: #{coords}" unless sum.zero?
+    # coords = [point[:x], point[:y], point[:z]].join(',')
+    # sum = point.values.reduce(:+)
+    # raise "ERROR: point is off-grid: #{coords}" unless sum.zero?
     distance = point.values.map(&:abs).max
     furthest = distance if distance > furthest
   end
