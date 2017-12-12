@@ -6,8 +6,9 @@ require 'benchmark'
 require 'pp'
 require 'set'
 
-def build_group(group, seen, input, groups)
+def build_group(group, input, groups)
   emptyset = [].to_set
+  seen = [].to_set
   while group - seen != emptyset.to_set
     todo = group - seen
     neighbors = input.find_all { |x| x.include?(todo.first) }
@@ -28,8 +29,7 @@ def part12(input = nil)
   groups = Set.new
   until data.empty?
     group = data.first
-    seen = [].to_set
-    build_group(group, seen, data, groups)
+    build_group(group, data, groups)
   end
 
   [groups.select { |g| g.include?(0) }.first.to_a.size, groups.to_a.size]
