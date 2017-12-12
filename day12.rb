@@ -6,32 +6,37 @@ require 'benchmark'
 require 'pp'
 require 'set'
 
+def build_group(group, seen, input, groups)
+  emptyset = [].to_set
+  while group - seen != emptyset.to_set
+    todo = group - seen
+    neighbors = input.find_all { |x| x.include?(todo.first) }
+    neighbors.each do |n|
+      group += n
+    end
+    seen += [todo.first]
+  end
+  groups << group
+  input.select! { |x| group & x == emptyset }
+end
+
 def part12(input = nil)
-  input.map! { |i| i.gsub(' <->', ',').tr(' ', '').split(',').map(&:to_i) }
-  data = input.map(&:to_set)
+  data = input.map do |line|
+    line.chomp("\n").gsub(' <->', ',').tr(' ', '').split(',').map(&:to_i).to_set
+  end
 
   groups = Set.new
-
-  input.flatten.uniq.each do |pid|
-    next unless (groups.find { |x| x.include?(pid) }).nil?
-    group = data.find { |x| x.include?(pid) }
+  until data.empty?
+    group = data.first
     seen = [].to_set
-    while group - seen != [].to_set
-      todo = group - seen
-      neighbors = data.find_all { |x| x.include?(todo.first) }
-      neighbors.each do |n|
-        group += n
-      end
-      seen += [todo.first]
-    end
-    groups << group
+    build_group(group, seen, data, groups)
   end
 
   [groups.select { |g| g.include?(0) }.first.to_a.size, groups.to_a.size]
 end
 
 if ARGF
-  input = ARGF.read.chomp("\n").lines.map { |line| line.chomp("\n") }
+  input = ARGF.read.lines
   fmt_output = "%6s: %14s = %8d (took %8.3fms)\n"
   result1 = nil
   result2 = nil
