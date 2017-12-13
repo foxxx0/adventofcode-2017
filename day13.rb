@@ -3,22 +3,22 @@
 require 'benchmark'
 require 'pp'
 
-def part1(ranges = nil)
-  periods = ranges.map { |l, d| [l, 2 * (d - 1)] }.to_h.freeze
-  periods.select { |l, p| (l % p).zero? }.keys.map { |l| l * ranges[l] }.sum
+def part1(depths = nil)
+  periods = depths.map { |l, d| [l, 2 * (d - 1)] }.to_h.freeze
+  periods.select { |l, p| (l % p).zero? }.keys.map { |l| l * depths[l] }.sum
 end
 
-def caught?(ranges, periods, delay)
-  ranges.each_key do |depth|
-    return true if ((depth + delay) % periods[depth]).zero?
+def caught?(depths, periods, delay)
+  depths.each_key do |layer|
+    return true if ((layer + delay) % periods[layer]).zero?
   end
   false
 end
 
-def part2(ranges = nil)
-  periods = ranges.map { |l, d| [l, 2 * (d - 1)] }.to_h.freeze
+def part2(depths = nil)
+  periods = depths.map { |l, d| [l, 2 * (d - 1)] }.to_h.freeze
   delay = 0
-  delay += 1 while caught?(ranges, periods, delay)
+  delay += 1 while caught?(depths, periods, delay)
   delay
 end
 
