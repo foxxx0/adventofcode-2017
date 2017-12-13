@@ -8,8 +8,9 @@ def part1(input = nil)
   instructions = input.map(&:to_i)
   i = 0
   steps = 0
-  loop do
-    break if i >= instructions.length
+  # loop do
+  #   break if i >= instructions.length
+  while i < instructions.size
     jump = instructions[i]
     instructions[i] += 1
     steps += 1
@@ -22,11 +23,11 @@ def part2(input = nil)
   instructions = input.map(&:to_i)
   i = 0
   steps = 0
-  loop do
-    break if i >= instructions.length
+  # loop do
+  #   break if i >= instructions.length
+  while i < instructions.size
     jump = instructions[i]
     jump >= 3 ? instructions[i] -= 1 : instructions[i] += 1
-    # printf("jump (%d) >= 3 : %s\n", jump, jump >= 3 ? instructions[i] -= 1 : instructions[i] += 1)
     steps += 1
     i += jump
   end

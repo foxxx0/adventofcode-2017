@@ -34,13 +34,13 @@ if ARGF
   result_part1 = 0
   result_part2 = 0
 
-  before1 = Time.now.epoch_ms
-  result_part1 = part1(input)
-  after1 = Time.now.epoch_ms
-  printf fmt_output, "part1", "steps", result_part1, after1 - before1
+  time1 = Benchmark.realtime do
+    result_part1 = part1(input)
+  end
+  printf fmt_output, "part1", "steps", result_part1, time1.total_milliseconds
 
-  before2 = Time.now.epoch_ms
-  result_part2 = part2(input)
-  after2 = Time.now.epoch_ms
-  printf fmt_output, "part2", "steps", result_part2, after2 - before2
+  time2 = Benchmark.realtime do
+    result_part2 = part2(input)
+  end
+  printf fmt_output, "part2", "steps", result_part2, time2.total_milliseconds
 end
