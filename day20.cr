@@ -35,9 +35,10 @@ end
 
 def part1(input : Array(String)) : Int32
   particles = parse(input)
-  accels = {} of Int32 => Int32
-  particles.each_with_index { |p, pid| accels[pid] = p.a.to_a.map(&.abs).sum }
-  accels.min_by{ |k,v| v }.first
+
+  particles.each_with_index.min_by do |p, pid|
+    { p.a.map(&.abs).sum, p.v.map(&.abs).sum, p.p.map(&.abs).sum, pid }
+  end.last
 end
 
 def part2(input : Array(String)) : Int32
