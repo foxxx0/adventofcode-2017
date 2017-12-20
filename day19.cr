@@ -29,11 +29,11 @@ end
 @[AlwaysInline]
 def next_direction(pos : {Int32, Int32}, grid : Array(String), dir : {Int32, Int32}) : {Int32, Int32}
   cur = grid[pos[0]][pos[1]]
-  case dir
-  when DIRECTIONS[:down], DIRECTIONS[:up]
-    case cur
-    when '|', '-', 'a'..'z', 'A'..'Z' then return dir
-    when '+'
+  case cur
+  when '|', '-', 'a'..'z', 'A'..'Z' then return dir
+  when '+'
+    case dir
+    when DIRECTIONS[:down], DIRECTIONS[:up]
       if path?(next_pos(pos, DIRECTIONS[:left]), grid)
         return DIRECTIONS[:left]
       elsif path?(next_pos(pos, DIRECTIONS[:right]), grid)
@@ -41,12 +41,7 @@ def next_direction(pos : {Int32, Int32}, grid : Array(String), dir : {Int32, Int
       else
         raise "dunno where to move from here: #{cur} (#{pos})"
       end
-    else raise "unknown char at current pos: #{cur}"
-    end
-  when DIRECTIONS[:right], DIRECTIONS[:left]
-    case cur
-    when '|', '-', 'a'..'z', 'A'..'Z' then return dir
-    when '+'
+    when DIRECTIONS[:right], DIRECTIONS[:left]
       if path?(next_pos(pos, DIRECTIONS[:up]), grid)
         return DIRECTIONS[:up]
       elsif path?(next_pos(pos, DIRECTIONS[:down]), grid)
@@ -54,9 +49,9 @@ def next_direction(pos : {Int32, Int32}, grid : Array(String), dir : {Int32, Int
       else
         raise "dunno where to move from here: #{cur} (#{pos})"
       end
-    else raise "unknown char at current pos: #{cur}"
+    else raise "unknown direction: #{dir}"
     end
-  else raise "unknown direction: #{dir}"
+  else raise "unknown char at current pos: #{cur}"
   end
 end
 
