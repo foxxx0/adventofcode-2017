@@ -7,106 +7,39 @@ require 'benchmark'
 require 'pry'
 
 def part1(input = nil)
+  return 0 if input == 1
+
+  # x|y => right, up, left, down
+  directions = [[1, 0], [0, 1], [-1, 0], [0, -1]]
+  num = 1
   x = 0
   y = 0
-  y_min = 0
-  x_min = 0
-  y_max = 0
-  x_max = 0
-  num = 1
-  index = {}
-  rows = {}
-  last_move = nil
+  direction = 0
 
-  # access port
-  index[num] = { x: x, y: y }
-  rows[y] = { x => num }
-  num += 1
+  iterations = 0
+  progress = 0
 
-  unless num >= input
-    loop do
-      case last_move
-      when 'right'
-        # check if above is empty
-        if rows[(y - 1)].nil? || rows[(y - 1)][x].nil?
-          # go up
-          y -= 1
-          last_move = 'up'
-        else
-          # continue right
-          x += 1
-        end
-      when 'up'
-        # check if left is empty
-        if rows[y][(x - 1)].nil?
-          # go left
-          x -= 1
-          last_move = 'left'
-        else
-          # continue up
-          y -= 1
-        end
-      when 'left'
-        # check if beneth is empty
-        if rows[(y + 1)].nil? || rows[(y + 1)][x].nil?
-          # go down
-          y += 1
-          last_move = 'down'
-        else
-          # continue left
-          x -= 1
-        end
-      when 'down'
-        # check if right is empty
-        if rows[y][(x + 1)].nil?
-          # go right
-          x += 1
-          last_move = 'right'
-        else
-          # continue down
-          y += 1
-        end
-      when nil then
-        # initial move to the right
-        x += 1
-        last_move = 'right'
-      end
+  change_direction_in = 1
 
-      index[num] = { x: x, y: y }
-      if rows[y].nil?
-        rows[y] = { x => num }
-      else
-        rows[y][x] = num
-      end
-      # p(index)
-      # p(rows)
-      # puts("num = #{num}")
-      # puts("x = #{x}")
-      # puts("y = #{y}")
-      # puts("last_move = #{last_move}")
-
-      x_min = x if x < x_min
-      y_min = y if y < y_min
-      x_max = x if x > x_max
-      y_max = y if y > y_max
-
-      break if num == input
+  while num < input
+    i = 0
+    while i < change_direction_in
       num += 1
+      x += directions[direction][0]
+      y += directions[direction][1]
+      i += 1
+      return (x.abs + y.abs) if num >= input
+    end
+    direction = (direction + 1) % directions.length
+    change_direction_in += 1 if (direction % 2).zero?
+
+    iterations += 1
+    if (iterations % (input / 1000).floor).zero?
+      progress += 0.1
+      printf "iter: %d, num = %d (ca. %3.1f%% done)\n", iterations, num, progress
     end
   end
-
-  # y_iter = y_min
-  # while y_iter <= y_max
-  #   x_iter = x_min
-  #   while x_iter <= x_max
-  #     printf '%5d ', rows[y_iter][x_iter] unless rows[y_iter][x_iter].nil?
-  #     x_iter += 1
-  #   end
-  #   printf "\n"
-  #   y_iter += 1
-  # end
-
-  (index[input][:x]).abs + (index[input][:y]).abs
+  (x.abs + y.abs)
 end
 
 def part2(input = nil)
